@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" fill="none">
+  <rect width="1200" height="700" fill="#E8E1D5"/>
+  <rect x="350" y="100" width="500" height="500" rx="8" fill="#D9D2C5"/>
+  <path d="M600 200 L520 350 L540 350 L540 500 L660 500 L660 350 L680 350 Z" fill="#B8794A" opacity="0.3"/>
+  <path d="M560 220 L600 180 L640 220" stroke="#B8794A" stroke-width="3" fill="none" opacity="0.5"/>
+  <line x1="540" y1="350" x2="540" y2="500" stroke="#8C5530" stroke-width="1" opacity="0.3"/>
+  <line x1="660" y1="350" x2="660" y2="500" stroke="#8C5530" stroke-width="1" opacity="0.3"/>
+  <line x1="540" y1="350" x2="660" y2="350" stroke="#8C5530" stroke-width="1" opacity="0.3"/>
+  <text x="600" y="560" text-anchor="middle" fill="#6B6B66" font-family="sans-serif" font-size="14" letter-spacing="2">JD &amp; CO BW</text>
+</svg>
