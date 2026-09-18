@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* ─── JD & CO BW Design Tokens ────────────────────────────────────────── */
+
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-fraunces);
+
+  /* JD Brand Colors */
+  --color-ink: #0E0F12;
+  --color-graphite: #1A1D22;
+  --color-bone: #F5F2EC;
+  --color-sand: #E8E1D5;
+  --color-clay: #B8794A;
+  --color-clay-deep: #8C5530;
+  --color-line: #D9D2C5;
+  --color-muted-text: #6B6B66;
+
+  /* Collection Accents */
+  --color-corporate: #1F3A5F;
+  --color-sport: #C0392B;
+  --color-safari: #7A6A3F;
+  --color-mining: #3E3E3E;
+  --color-logistics: #1E6F5C;
+  --color-tactical: #2B2F2B;
+  --color-healthcare: #2A7F9E;
+  --color-campus: #5C4B8A;
+
+  /* shadcn/ui semantic tokens (mapped to JD) */
+  --color-background: var(--jd-background);
+  --color-foreground: var(--jd-foreground);
+  --color-card: var(--jd-card);
+  --color-card-foreground: var(--jd-card-foreground);
+  --color-popover: var(--jd-popover);
+  --color-popover-foreground: var(--jd-popover-foreground);
+  --color-primary: var(--jd-primary);
+  --color-primary-foreground: var(--jd-primary-foreground);
+  --color-secondary: var(--jd-secondary);
+  --color-secondary-foreground: var(--jd-secondary-foreground);
+  --color-muted: var(--jd-muted);
+  --color-muted-foreground: var(--jd-muted-foreground);
+  --color-accent: var(--jd-accent);
+  --color-accent-foreground: var(--jd-accent-foreground);
+  --color-destructive: var(--jd-destructive);
+  --color-border: var(--jd-border);
+  --color-input: var(--jd-input);
+  --color-ring: var(--jd-ring);
+
+  /* Radius (crisp — manufactured feel) */
+  --radius: 0.125rem;
+
+  /* Spacing scale for sections */
+  --spacing-section-mobile: 4rem;
+  --spacing-section-desktop: 8rem;
+}
+
+/* ─── JD Theme Variables ─────────────────────────────────────────────────── */
+
+:root {
+  --jd-background: #F5F2EC;
+  --jd-foreground: #0E0F12;
+  --jd-card: #FFFFFF;
+  --jd-card-foreground: #0E0F12;
+  --jd-popover: #FFFFFF;
+  --jd-popover-foreground: #0E0F12;
+  --jd-primary: #B8794A;
+  --jd-primary-foreground: #FFFFFF;
+  --jd-secondary: #E8E1D5;
+  --jd-secondary-foreground: #0E0F12;
+  --jd-muted: #F5F2EC;
+  --jd-muted-foreground: #6B6B66;
+  --jd-accent: #E8E1D5;
+  --jd-accent-foreground: #0E0F12;
+  --jd-destructive: #C0392B;
+  --jd-border: #D9D2C5;
+  --jd-input: #D9D2C5;
+  --jd-ring: #B8794A;
+}
+
+/* ─── Base Layer ─────────────────────────────────────────────────────────── */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+}
