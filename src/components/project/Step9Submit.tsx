@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useProjectFormStore } from "@/lib/stores/projectForm"
 import { submitProject } from "@/lib/api"
 import { track } from "@/lib/analytics"
+import { finalSubmissionSchema } from "@/lib/validation/projectForm"
 import { Loader2, CheckCircle } from "lucide-react"
 
 export function Step9Submit() {
@@ -17,39 +18,51 @@ export function Step9Submit() {
     setStatus("submitting")
     setError(null)
 
-    try {
-      const result = await submitProject({
-        organisationName: formData.organisationName,
-        organisationType: formData.organisationType,
-        industry: formData.industry,
-        contactName: formData.contactName,
-        contactEmail: formData.contactEmail,
-        contactPhone: formData.contactPhone,
-        contactRole: formData.contactRole,
-        projectName: formData.projectName,
-        description: formData.description,
-        customizationTier: formData.customizationTier as "PLAIN" | "TRIMMED" | "SUBLIMATION",
-        collections: formData.collections,
-        brandingOptions: formData.brandingOptions,
-        logoUrl: formData.logoUrl || undefined,
-        quantityRange: formData.quantityRange,
-        sizes: formData.sizes,
-        colours: formData.colours,
-        specialRequirements: formData.specialRequirements,
-        deadline: formData.deadline,
-        budget: formData.budget,
-        urgency: formData.urgency,
-        attachments: formData.attachments,
-      })
+    // Validate full payload before submission
+    const parsed = finalSubmissionSchema.safeParse({
+      organisationName: formData.organisationName,
+      organisationType: formData.organisationType,
+      industry: formData.industry,
+      contactName: formData.contactName,
+      contactEmail: formData.contactEmail,
+      contactPhone: formData.contactPhone,
+      contactRole: formData.contactRole,
+      projectName: formData.projectName,
+      description: formData.description,
+      customizationTier: formData.customizationTier,
+      collections: formData.collections,
+      brandingOptions: formData.brandingOptions,
+      logoUrl: formData.logoUrl,
+      quantityRange: formData.quantityRange,
+      sizes: formData.sizes,
+      colours: formData.colours,
+      specialRequirements: formData.specialRequirements,
+      deadline: formData.deadline,
+      urgency: formData.urgency,
+      budget: formData.budget,
+      attachments: formData.attachments,
+    })
 
-      track({ name: "project_submitted", properties: { reference: result.reference } })
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message ?? "Validation failed"
+      setError(`Please go back and fix: ${firstError}`)
+      setStatus("idle")
+      return
+    }
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { selectedProduct: _, ...submitData } = parsed.data
+      const submitResult = await submitProject(submitData)
+
+      track({ name: "project_submitted", properties: { reference: submitResult.reference } })
 
       setStatus("done")
       resetForm()
 
       // Brief pause then redirect
       setTimeout(() => {
-        router.push(`/start-a-project/success?ref=${result.reference}`)
+        router.push(`/start-a-project/success?ref=${submitResult.reference}`)
       }, 1200)
     } catch {
       setError("Something went wrong. Please try again.")

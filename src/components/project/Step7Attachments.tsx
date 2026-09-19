@@ -5,11 +5,35 @@ import { useProjectFormStore } from "@/lib/stores/projectForm"
 import { uploadFile } from "@/lib/api"
 import { Upload, X, FileText, CheckCircle, AlertCircle } from "lucide-react"
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+const MAX_FILE_COUNT = 5
+const ALLOWED_TYPES: Record<string, string> = {
+  "image/png": "PNG",
+  "image/jpeg": "JPG",
+  "image/svg+xml": "SVG",
+  "application/pdf": "PDF",
+  "application/postscript": "AI",
+}
+
 interface UploadedFile {
   name: string
   url: string
   progress: number
   status: "uploading" | "done" | "error"
+  error?: string
+}
+
+function validateFile(file: File, currentCount: number): string | null {
+  if (currentCount >= MAX_FILE_COUNT) {
+    return `Maximum ${MAX_FILE_COUNT} files allowed`
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return `File exceeds 10MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB)`
+  }
+  if (!ALLOWED_TYPES[file.type]) {
+    return `File type not allowed — accepted: PNG, JPG, SVG, PDF, AI`
+  }
+  return null
 }
 
 export function Step7Attachments() {
@@ -21,19 +45,38 @@ export function Step7Attachments() {
     async (fileList: FileList | null) => {
       if (!fileList) return
 
-      const startIdx = files.length
-      const newEntries: UploadedFile[] = Array.from(fileList).map((f) => ({
-        name: f.name,
-        url: "",
-        progress: 0,
-        status: "uploading" as const,
-      }))
+      const validFiles: { file: File; idx: number }[] = []
+      const rejects: { name: string; error: string }[] = []
 
-      setFiles((prev) => [...prev, ...newEntries])
+      for (const file of Array.from(fileList)) {
+        const err = validateFile(file, files.length + validFiles.length)
+        if (err) {
+          rejects.push({ name: file.name, error: err })
+        } else {
+          validFiles.push({ file, idx: files.length + validFiles.length })
+        }
+      }
 
-      for (let i = 0; i < fileList.length; i++) {
-        const file = fileList[i]
-        const idx = startIdx + i
+      // Show rejected files with errors immediately
+      if (rejects.length > 0) {
+        setFiles((prev) => [
+          ...prev,
+          ...rejects.map((r) => ({
+            name: r.name,
+            url: "",
+            progress: 0,
+            status: "error" as const,
+            error: r.error,
+          })),
+        ])
+      }
+
+      // Upload valid files
+      for (const { file, idx } of validFiles) {
+        setFiles((prev) => [
+          ...prev,
+          { name: file.name, url: "", progress: 0, status: "uploading" as const },
+        ])
 
         try {
           const result = await uploadFile(file, (progress) => {
@@ -54,7 +97,9 @@ export function Step7Attachments() {
         } catch {
           setFiles((prev) =>
             prev.map((f, j) =>
-              j === idx ? { ...f, status: "error" } : f
+              j === idx
+                ? { ...f, status: "error", error: "Upload failed — try again" }
+                : f
             )
           )
         }
@@ -75,6 +120,8 @@ export function Step7Attachments() {
     },
     [files, formData.attachments, updateFormData]
   )
+
+  const successfulCount = files.filter((f) => f.status === "done").length
 
   return (
     <div className="space-y-8">
@@ -107,7 +154,7 @@ export function Step7Attachments() {
           <span className="font-medium text-clay">browse</span>
         </p>
         <p className="mt-1 text-xs text-muted-text">
-          PNG, SVG, AI, PDF — max 10MB each
+          PNG, JPG, SVG, PDF, AI — max 10MB each, up to 5 files
         </p>
         <input
           ref={inputRef}
@@ -118,6 +165,14 @@ export function Step7Attachments() {
           onChange={(e) => handleFiles(e.target.files)}
         />
       </div>
+
+      {/* File count */}
+      {files.length > 0 && (
+        <p className="text-xs text-muted-text">
+          {successfulCount} of {files.length} file{files.length !== 1 ? "s" : ""} uploaded
+          {successfulCount >= MAX_FILE_COUNT && " (max reached)"}
+        </p>
+      )}
 
       {/* File list */}
       {files.length > 0 && (
@@ -151,7 +206,7 @@ export function Step7Attachments() {
 
                 {file.status === "error" && (
                   <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" /> Upload failed
+                    <AlertCircle className="h-3 w-3" /> {file.error ?? "Upload failed"}
                   </p>
                 )}
               </div>

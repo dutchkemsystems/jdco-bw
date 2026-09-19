@@ -61,6 +61,48 @@ export const step7Schema = z.object({
 
 export const step8Schema = z.object({})
 
+// ─── Step 9: Final Submission (validates complete payload) ─────────────────
+
+export const finalSubmissionSchema = z.object({
+  // Step 1: Organization
+  organisationName: z.string().min(2, "Organisation name is required"),
+  organisationType: z.string().min(1, "Please select an organisation type"),
+  industry: z.string().min(1, "Please select an industry"),
+
+  // Step 2: Contact
+  contactName: z.string().min(2, "Contact name is required"),
+  contactEmail: z.string().email("Valid email address required"),
+  contactPhone: z.string().min(6, "Phone number is required"),
+  contactRole: z.string().min(2, "Role or position is required"),
+
+  // Step 3: Project
+  projectName: z.string().min(2, "Project name is required"),
+  description: z.string().min(10, "Please provide a brief description (min 10 characters)"),
+  customizationTier: z.enum(["PLAIN", "TRIMMED", "SUBLIMATION"]),
+  collections: z.array(z.string()).min(1, "Select at least one collection"),
+  selectedProduct: z.string().optional(),
+
+  // Step 4: Branding
+  brandingOptions: z.array(z.string()).min(1, "Select at least one branding option"),
+  logoUrl: z.string().url("Please provide a valid URL").optional().or(z.literal("")),
+
+  // Step 5: Requirements
+  quantityRange: z.string().min(1, "Estimated quantity is required"),
+  sizes: z.array(z.string()).min(1, "Select at least one size"),
+  colours: z.array(z.string()).min(1, "Select at least one colour"),
+  specialRequirements: z.string().default(""),
+
+  // Step 6: Timeline
+  deadline: z.string().min(1, "Required-by date is required"),
+  urgency: z.enum(["standard", "priority", "urgent"]),
+  budget: z.string().default(""),
+
+  // Step 7: Attachments
+  attachments: z.array(z.string()).default([]),
+})
+
+export type FinalSubmissionData = z.infer<typeof finalSubmissionSchema>
+
 // ─── Combined type ──────────────────────────────────────────────────────────
 
 export type Step1Data = z.infer<typeof step1Schema>
