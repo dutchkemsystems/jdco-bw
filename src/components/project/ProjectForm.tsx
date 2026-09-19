@@ -107,7 +107,10 @@ export function ProjectForm() {
   const showNav = currentStep < 9
 
   return (
-    <div className="border border-line bg-white p-6 md:p-8">
+    <div
+      className="border border-line bg-white p-6 md:p-8"
+      aria-describedby={errors.length > 0 ? "form-errors" : undefined}
+    >
       {/* Step indicator */}
       <div className="mb-8">
         <StepIndicator />
@@ -115,7 +118,12 @@ export function ProjectForm() {
 
       {/* Validation errors */}
       {errors.length > 0 && (
-        <div className="mb-6 border border-red-200 bg-red-50 p-4">
+        <div
+          id="form-errors"
+          role="alert"
+          aria-live="assertive"
+          className="mb-6 border border-red-200 bg-red-50 p-4"
+        >
           <p className="text-sm font-medium text-red-800">
             Please fix the following:
           </p>

@@ -1,33 +1,32 @@
 import { notFound } from "next/navigation"
-import type { Metadata } from "next"
 import { collections, getCollectionBySlug } from "@/lib/content/collections"
 import { getProductsByCollection } from "@/lib/content/products"
 import { CollectionHero } from "@/components/collections/CollectionHero"
 import { CollectionMeta } from "@/components/collections/CollectionMeta"
 import { CollectionProductGrid } from "@/components/collections/CollectionProductGrid"
 import { ProjectCTA } from "@/components/home/ProjectCTA"
+import { generatePageMetadata, breadcrumbJsonLd } from "@/lib/seo"
 
-// TODO: replace with CMS — generateStaticParams from CMS
 export function generateStaticParams() {
   return collections.map((collection) => ({
     slug: collection.slug,
   }))
 }
 
-// TODO: replace with CMS
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
-}): Promise<Metadata> {
+}) {
   const { slug } = await params
   const collection = getCollectionBySlug(slug)
   if (!collection) return { title: "Not Found" }
 
-  return {
-    title: collection.name,
-    description: collection.description,
-  }
+  return generatePageMetadata(
+    collection.name,
+    collection.description,
+    `/collections/${collection.slug}`
+  )
 }
 
 export default async function CollectionDetailPage({
@@ -44,8 +43,18 @@ export default async function CollectionDetailPage({
 
   const collectionProducts = getProductsByCollection(slug)
 
+  const jsonLd = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Collections", url: "/collections" },
+    { name: collection.name, url: `/collections/${collection.slug}` },
+  ])
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <CollectionHero collection={collection} />
       <CollectionMeta
         collection={collection}

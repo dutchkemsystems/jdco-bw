@@ -1,20 +1,28 @@
-import type { Metadata } from "next"
 import { SectionHeading } from "@/components/shared/SectionHeading"
 import { CTAButton } from "@/components/shared/CTAButton"
 import { BrandSignature } from "@/components/shared/BrandSignature"
 import { OrderingSteps } from "@/components/ordering/OrderingSteps"
 import { OrderingNote } from "@/components/ordering/OrderingNote"
+import { generatePageMetadata, breadcrumbJsonLd } from "@/lib/seo"
 
-// TODO: replace with CMS
-export const metadata: Metadata = {
-  title: "Ordering System",
-  description:
-    "Nine steps from enquiry to delivery. A structured process designed for clarity and confidence.",
-}
+export const metadata = generatePageMetadata(
+  "Ordering System",
+  "Nine steps from enquiry to delivery. A structured process designed for clarity and confidence.",
+  "/ordering-system"
+)
 
 export default function OrderingSystemPage() {
+  const jsonLd = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Ordering System", url: "/ordering-system" },
+  ])
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="bg-graphite py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">

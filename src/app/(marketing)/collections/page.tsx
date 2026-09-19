@@ -1,19 +1,27 @@
-import type { Metadata } from "next"
 import { collections } from "@/lib/content/collections"
 import { CollectionCard } from "@/components/collections/CollectionCard"
 import { SectionHeading } from "@/components/shared/SectionHeading"
 import { CTAButton } from "@/components/shared/CTAButton"
+import { generatePageMetadata, breadcrumbJsonLd } from "@/lib/seo"
 
-// TODO: replace with CMS
-export const metadata: Metadata = {
-  title: "Collections",
-  description:
-    "Eight industry-specific collections. One standard. Every garment built for the identity it represents.",
-}
+export const metadata = generatePageMetadata(
+  "Collections",
+  "Eight industry-specific collections. One standard. Every garment built for the identity it represents.",
+  "/collections"
+)
 
 export default function CollectionsPage() {
+  const jsonLd = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Collections", url: "/collections" },
+  ])
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="bg-graphite py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">

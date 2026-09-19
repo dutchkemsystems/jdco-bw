@@ -1,16 +1,15 @@
-import type { Metadata } from "next"
 import { SectionHeading } from "@/components/shared/SectionHeading"
 import { CTAButton } from "@/components/shared/CTAButton"
 import { BrandSignature } from "@/components/shared/BrandSignature"
 import { ThreeDotMark } from "@/components/shared/ThreeDotMark"
+import { generatePageMetadata, breadcrumbJsonLd } from "@/lib/seo"
 import { Shield, Truck, Scissors, Users } from "lucide-react"
 
-// TODO: replace with CMS
-export const metadata: Metadata = {
-  title: "About",
-  description:
-    "JD & CO BW designs professional identities for organisations through custom manufactured jackets and outerwear. Based in Gaborone, Botswana.",
-}
+export const metadata = generatePageMetadata(
+  "About",
+  "JD & CO BW designs professional identities for organisations through custom manufactured jackets and outerwear. Based in Gaborone, Botswana.",
+  "/about"
+)
 
 const values = [
   {
@@ -40,8 +39,17 @@ const values = [
 ]
 
 export default function AboutPage() {
+  const jsonLd = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "About", url: "/about" },
+  ])
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="bg-graphite py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">

@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import type { Metadata } from "next"
 import { products, getProductBySlug } from "@/lib/content/products"
 import { getCollectionBySlug } from "@/lib/content/collections"
 import { ProductGallery } from "@/components/products/ProductGallery"
@@ -9,79 +8,29 @@ import { RelatedProducts } from "@/components/products/RelatedProducts"
 import { ProductCTA } from "@/components/products/ProductCTA"
 import { CTAButton } from "@/components/shared/CTAButton"
 import { ThreeDotMark } from "@/components/shared/ThreeDotMark"
+import { generatePageMetadata, breadcrumbJsonLd, productJsonLd } from "@/lib/seo"
 import type { Product } from "@/types"
 
-// TODO: replace with CMS
 export function generateStaticParams() {
   return products.map((product) => ({
     slug: product.slug,
   }))
 }
 
-// TODO: replace with CMS
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
-}): Promise<Metadata> {
+}) {
   const { slug } = await params
   const product = getProductBySlug(slug)
   if (!product) return { title: "Not Found" }
 
-  return {
-    title: product.name,
-    description: product.description,
-  }
-}
-
-// JSON-LD Product schema
-function ProductJsonLd({ product }: { product: Product }) {
-  const collection = getCollectionBySlug(product.collection)
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    brand: {
-      "@type": "Brand",
-      name: "JD & CO BW",
-    },
-    category: product.category,
-    image: product.images[0] || "/placeholders/jacket.svg",
-    offers: {
-      "@type": "Offer",
-      availability: "https://schema.org/InStock",
-      priceCurrency: "BWP",
-      price: "0",
-      priceValidUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .split("T")[0],
-    },
-    additionalProperty: [
-      ...product.features.map((f) => ({
-        "@type": "PropertyValue",
-        name: "Feature",
-        value: f,
-      })),
-      ...product.colours.map((c) => ({
-        "@type": "PropertyValue",
-        name: "Colour",
-        value: c,
-      })),
-      ...product.sizes.map((s) => ({
-        "@type": "PropertyValue",
-        name: "Size",
-        value: s,
-      })),
-    ],
-  }
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-    />
+  return generatePageMetadata(
+    product.name,
+    product.description,
+    `/products/${product.slug}`,
+    product.images[0]
   )
 }
 
@@ -99,9 +48,32 @@ export default async function ProductDetailPage({
 
   const collection = getCollectionBySlug(product.collection)
 
+  const jsonLd = productJsonLd({
+    name: product.name,
+    description: product.description,
+    image: product.images[0] || "/placeholders/jacket.svg",
+    collection: product.category,
+  })
+
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Products", url: "/products" },
+    ...(collection
+      ? [{ name: collection.name, url: `/collections/${collection.slug}` }]
+      : []),
+    { name: product.name, url: `/products/${product.slug}` },
+  ])
+
   return (
     <>
-      <ProductJsonLd product={product} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
 
       {/* Breadcrumb */}
       <div className="border-b border-line bg-white py-4">

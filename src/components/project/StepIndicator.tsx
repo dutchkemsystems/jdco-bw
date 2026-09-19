@@ -18,7 +18,7 @@ export function StepIndicator() {
   const { currentStep } = useProjectFormStore()
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto pb-2">
+    <nav aria-label="Form progress" className="flex items-center gap-1 overflow-x-auto pb-2">
       {steps.map((step) => {
         const isCompleted = currentStep > step.number
         const isCurrent = currentStep === step.number
@@ -67,6 +67,6 @@ export function StepIndicator() {
           </div>
         )
       })}
-    </div>
+    </nav>
   )
 }

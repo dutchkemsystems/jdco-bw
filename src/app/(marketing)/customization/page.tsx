@@ -1,4 +1,3 @@
-import type { Metadata } from "next"
 import { customizationTiers } from "@/lib/content/customization"
 import { SectionHeading } from "@/components/shared/SectionHeading"
 import { CTAButton } from "@/components/shared/CTAButton"
@@ -6,17 +5,26 @@ import { BrandSignature } from "@/components/shared/BrandSignature"
 import { CustomizationTabs } from "@/components/customization/CustomizationTabs"
 import { CustomizationCard } from "@/components/customization/CustomizationCard"
 import { CustomizationDiagram } from "@/components/customization/CustomizationDiagram"
+import { generatePageMetadata, breadcrumbJsonLd } from "@/lib/seo"
 
-// TODO: replace with CMS
-export const metadata: Metadata = {
-  title: "Customization",
-  description:
-    "Three tiers of customization — Plain, Trimmed, and Sublimation. No compromise on quality, identity, or specification.",
-}
+export const metadata = generatePageMetadata(
+  "Customization",
+  "Three tiers of customization — Plain, Trimmed, and Sublimation. No compromise on quality, identity, or specification.",
+  "/customization"
+)
 
 export default function CustomizationPage() {
+  const jsonLd = breadcrumbJsonLd([
+    { name: "Home", url: "/" },
+    { name: "Customization", url: "/customization" },
+  ])
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero */}
       <section className="bg-graphite py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-6">
