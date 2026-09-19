@@ -34,12 +34,41 @@ export const step4Schema = z.object({
   logoUrl: z.string().url("Please provide a valid URL").optional().or(z.literal("")),
 })
 
+// ─── Step 5: Requirements ───────────────────────────────────────────────────
+
+export const step5Schema = z.object({
+  quantityRange: z.string().min(1, "Estimated quantity is required"),
+  sizes: z.array(z.string()).min(1, "Select at least one size"),
+  colours: z.array(z.string()).min(1, "Select at least one colour"),
+  specialRequirements: z.string().optional(),
+})
+
+// ─── Step 6: Timeline ───────────────────────────────────────────────────────
+
+export const step6Schema = z.object({
+  deadline: z.string().min(1, "Required-by date is required"),
+  urgency: z.enum(["standard", "priority", "urgent"]),
+  budget: z.string().optional(),
+})
+
+// ─── Step 7: Attachments ────────────────────────────────────────────────────
+
+export const step7Schema = z.object({
+  attachments: z.array(z.string()).optional(),
+})
+
+// ─── Step 8: Review (no validation — read-only) ────────────────────────────
+
+export const step8Schema = z.object({})
+
 // ─── Combined type ──────────────────────────────────────────────────────────
 
 export type Step1Data = z.infer<typeof step1Schema>
 export type Step2Data = z.infer<typeof step2Schema>
 export type Step3Data = z.infer<typeof step3Schema>
 export type Step4Data = z.infer<typeof step4Schema>
+export type Step5Data = z.infer<typeof step5Schema>
+export type Step6Data = z.infer<typeof step6Schema>
 
 // ─── Organisation types ─────────────────────────────────────────────────────
 
