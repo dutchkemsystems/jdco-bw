@@ -85,11 +85,18 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-16 border-t border-white/10 pt-8 flex flex-wrap items-center justify-between gap-4">
-          <p className="text-xs text-white/30">
-            &copy; {new Date().getFullYear()} JD & CO BW. All rights reserved.
-          </p>
-          <p className="text-xs text-white/30">
+        <div className="mt-16 border-t border-white/10 pt-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-xs text-white/30">
+              &copy; {new Date().getFullYear()} JD & CO BW. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4 text-xs text-white/30">
+              <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-white/60 transition-colors">Terms</Link>
+              <Link href="/cookies" className="hover:text-white/60 transition-colors">Cookies</Link>
+            </div>
+          </div>
+          <p className="mt-4 text-xs text-white/30 text-right">
             Gaborone, Botswana
           </p>
         </div>

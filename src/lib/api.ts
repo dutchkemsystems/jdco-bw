@@ -20,7 +20,7 @@
  * ──────────────────────────────────────────────────────────────────────────────
  */
 
-import type { ProjectSubmission, ProjectStatus } from "@/types"
+import type { ProjectStatus } from "@/types"
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -72,7 +72,7 @@ export async function submitProject(
 // ─── Upload File ────────────────────────────────────────────────────────────
 
 export async function uploadFile(
-  file: File,
+  _file: File,
   onProgress?: (progress: number) => void
 ): Promise<{ url: string }> {
   // TODO: replace with real upload (e.g. S3 presigned URL, Cloudflare R2)
@@ -81,13 +81,13 @@ export async function uploadFile(
     await delay(200)
     onProgress?.((i / totalSteps) * 100)
   }
-  return { url: `/uploads/${file.name}` }
+  return { url: `/uploads/${_file.name}` }
 }
 
 // ─── Track Project Status ───────────────────────────────────────────────────
 
 export async function getProjectStatus(
-  reference: string
+  _reference: string
 ): Promise<{ status: ProjectStatus; updatedAt: string }> {
   // TODO: replace with real status lookup
   await delay(800)

@@ -1,15 +1,17 @@
 import { notFound } from "next/navigation"
 import { products, getProductBySlug } from "@/lib/content/products"
+
+export const revalidate = 3600
 import { getCollectionBySlug } from "@/lib/content/collections"
 import { ProductGallery } from "@/components/products/ProductGallery"
 import { ProductSpecs } from "@/components/products/ProductSpecs"
 import { CustomizationBadges } from "@/components/products/CustomizationBadges"
 import { RelatedProducts } from "@/components/products/RelatedProducts"
 import { ProductCTA } from "@/components/products/ProductCTA"
+import Link from "next/link"
 import { CTAButton } from "@/components/shared/CTAButton"
 import { ThreeDotMark } from "@/components/shared/ThreeDotMark"
 import { generatePageMetadata, breadcrumbJsonLd, productJsonLd } from "@/lib/seo"
-import type { Product } from "@/types"
 
 export function generateStaticParams() {
   return products.map((product) => ({
@@ -79,18 +81,18 @@ export default async function ProductDetailPage({
       <div className="border-b border-line bg-white py-4">
         <div className="mx-auto max-w-7xl px-6">
           <nav className="flex items-center gap-2 text-xs text-muted-text">
-            <a href="/products" className="hover:text-ink transition-colors">
+            <Link href="/products" className="hover:text-ink transition-colors">
               Products
-            </a>
+            </Link>
             <span>/</span>
             {collection && (
               <>
-                <a
+                <Link
                   href={`/collections/${collection.slug}`}
                   className="hover:text-ink transition-colors"
                 >
                   {collection.name}
-                </a>
+                </Link>
                 <span>/</span>
               </>
             )}

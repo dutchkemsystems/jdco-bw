@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation"
 import { collections, getCollectionBySlug } from "@/lib/content/collections"
+
+export const revalidate = 3600
 import { getProductsByCollection } from "@/lib/content/products"
 import { CollectionHero } from "@/components/collections/CollectionHero"
 import { CollectionMeta } from "@/components/collections/CollectionMeta"

@@ -31,7 +31,7 @@ export function ContactForm() {
     resolver: zodResolver(contactSchema),
   })
 
-  async function onSubmit(data: ContactFormData) {
+  async function onSubmit(_data: ContactFormData) {
     // TODO: replace with real API call
     await new Promise((r) => setTimeout(r, 1000))
 

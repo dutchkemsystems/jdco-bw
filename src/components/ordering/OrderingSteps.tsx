@@ -1,5 +1,4 @@
 import { orderingSteps } from "@/lib/content/ordering"
-import { OrderingNote } from "./OrderingNote"
 
 // TODO: replace with CMS
 export function OrderingSteps() {

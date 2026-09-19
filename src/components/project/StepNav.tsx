@@ -1,6 +1,5 @@
 "use client"
 
-import { useProjectFormStore } from "@/lib/stores/projectForm"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
 interface StepNavProps {
